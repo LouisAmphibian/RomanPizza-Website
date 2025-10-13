@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roman's Pizza - Your Cart</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <img src="your-logo.png" alt="Roman's Pizza Logo" />
+        </div>
+        <nav>
+            <a href="#">DELIVERY</a>
+            <a href="#">COLLECT</a>
+        </nav>
+        <div class="nav-buttons">
+            <button class="login-btn">LOGIN</button>
+            <button class="signup-btn">SIGNUP</button>
+            <div class="icons">
+                <a href="cart.html" class="cart-icon">🛒</a>
+                <i class="menu">☰</i>
+            </div>
+        </div>
+    </header>
+
+    <main class="cart-page">
+        <div class="cart-main-content">
+            <div class="cart-status">
+                <h2>YOUR CART</h2>
+                <div class="empty-cart-container">
+                    <img src="https://i.imgur.com/Kdk7d26.png" alt="Pizza Box Icon" class="pizza-box-icon" />
+                    <h3>OPPS! YOUR CART IS EMPTY</h3>
+                </div>
+            </div>
+
+            <aside class="cart-sidebar">
+                <button class="explore-menu-btn">Explore Menu</button>
+                <button class="add-more-btn">Add more items</button>
+                <div class="order-summary">
+                    <p><span>Sub Total</span> <span>ZAR 0</span></p>
+                    <p><span>Discount</span> <span>ZAR 0</span></p>
+                    <p class="total"><span>Total</span> <span>ZAR 0</span></p>
+                </div>
+                <textarea placeholder="Special Instructions (Optional)"></textarea>
+                <button class="checkout-btn">Checkout</button>
+                <button class="track-order-btn">TRACK ORDER</button>
+            </aside>
+        </div>
+
+        <section class="recommendations">
+            <h2>YOU MAY ALSO LIKE</h2>
+            <div class="recommendations-grid">
+                <div class="rec-card">
+                    <img src="https://www.romanspizza.co.za/wp-content/uploads/2022/08/Greek-1-scaled-e1687251610427.jpg" alt="Greek Pizza">
+                    <p>Greek Pizza</p>
+                    <span>ZAR 89.90</span>
+                    <button>Add</button>
+                </div>
+                 <div class="rec-card">
+                    <img src="https://www.romanspizza.co.za/wp-content/uploads/2022/08/Coke-500ml-1.jpg" alt="Water 500ml">
+                    <p>WATER 500ML</p>
+                    <span>ZAR 13.90</span>
+                    <button>Add</button>
+                </div>
+                 <div class="rec-card">
+                    <img src="https://www.romanspizza.co.za/wp-content/uploads/2023/10/Caramel-Dessert-Pie-1.jpg" alt="Caramel Dessert Pie">
+                    <p>Caramel Dessert Pie</p>
+                    <span>ZAR 27.90</span>
+                    <button>Add</button>
+                </div>
+                 <div class="rec-card">
+                    <img src="https://www.romanspizza.co.za/wp-content/uploads/2022/08/BBQ-Chicken-1-1-scaled-e1687251680237.jpg" alt="BBQ Chicken Pizza">
+                    <p>BBQ CHICKEN (SAVA...</p>
+                    <span>ZAR 109.90</span>
+                    <button>Add</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

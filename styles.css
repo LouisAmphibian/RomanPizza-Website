@@ -319,3 +319,276 @@ footer {
   background-color: #007bff;
 }
 
+/* ADD THESE STYLES TO YOUR EXISTING styles.css FILE */
+
+/* --- STYLES FOR SPECIALS PAGE (specials.html) --- */
+
+.specials-page {
+    background-color: #0047ab;
+    padding: 2rem 1rem;
+}
+
+.specials-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.selection-step {
+    background-color: #00bfff; /* Light blue background */
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.step-header {
+    border-bottom: 2px solid white;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.step-header h2 {
+    color: white;
+    font-size: 1.2rem;
+}
+
+.required-tag {
+    background-color: #ff4500;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.pizza-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.pizza-card {
+    background-color: #f0f8ff; /* AliceBlue, a very light blue */
+    color: #333;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.pizza-card img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+}
+
+.pizza-card h4 {
+    font-size: 1.1rem;
+    color: #0047ab;
+}
+
+.pizza-card p {
+    font-size: 0.9rem;
+    margin: 0.5rem 0 1rem 0;
+    min-height: 50px;
+}
+
+.pizza-tag {
+    position: absolute;
+    top: 0;
+    right: -30px;
+    background-color: #007bff;
+    color: white;
+    padding: 5px 35px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    transform: rotate(45deg);
+    transform-origin: top left;
+}
+
+.add-to-combo-btn {
+    background-color: #888;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 80%;
+    transition: background-color 0.3s;
+}
+
+.add-to-combo-btn:hover {
+    background-color: #ff0000;
+}
+
+
+/* --- STYLES FOR CART PAGE (cart.html) --- */
+
+.cart-page {
+    background-color: #00337c; /* Darker blue background */
+    padding: 2rem;
+    color: white;
+}
+
+.cart-main-content {
+    display: flex;
+    gap: 2rem;
+    max-width: 1300px;
+    margin: 0 auto 3rem auto;
+    flex-wrap: wrap;
+}
+
+.cart-status {
+    flex: 2; /* Takes up 2/3 of the space */
+}
+
+.cart-status h2 {
+    border-bottom: 4px solid #00bfff;
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+    display: inline-block;
+}
+
+.empty-cart-container {
+    text-align: center;
+    margin-top: 4rem;
+}
+
+.pizza-box-icon {
+    width: 100px;
+    margin-bottom: 1rem;
+}
+
+.empty-cart-container h3 {
+    font-size: 1.5rem;
+}
+
+.cart-sidebar {
+    flex: 1; /* Takes up 1/3 of the space */
+    background-color: #f0f8ff;
+    color: #333;
+    padding: 1.5rem;
+    border-radius: 10px;
+    min-width: 300px;
+}
+
+.cart-sidebar button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.cart-sidebar .explore-menu-btn {
+    background: transparent;
+    border: 1px solid #ccc;
+}
+
+.cart-sidebar .add-more-btn {
+    background-color: #ddd;
+}
+
+.order-summary {
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+}
+
+.order-summary p {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+}
+
+.order-summary .total {
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-top: 1px solid #ccc;
+    padding-top: 1rem;
+}
+
+.cart-sidebar textarea {
+    width: 100%;
+    height: 60px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 1rem;
+    resize: none;
+}
+
+.checkout-btn {
+    background-color: #d90429 !important;
+    color: white;
+}
+
+.track-order-btn {
+    background-color: #8d99ae !important;
+    color: white;
+}
+
+/* Recommendations Section */
+.recommendations {
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.recommendations h2 {
+    margin-bottom: 1.5rem;
+}
+
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.rec-card {
+    background-color: white;
+    color: #333;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.rec-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.rec-card p {
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.rec-card span {
+    color: #555;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.rec-card button {
+    background-color: #d90429;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Make cart icon in header a link */
+.cart-icon {
+    text-decoration: none;
+    color: white;
+}
