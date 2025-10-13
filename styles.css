@@ -1,0 +1,199 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* NAVBAR */
+.navbar {
+  background-color: #0047ab;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+}
+
+.logo img {
+  width: 80px;
+}
+
+.navbar nav a {
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.login-btn, .signup-btn {
+  background: transparent;
+  border: 2px solid #fff;
+  color: #fff;
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-weight: 600;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #fff;
+  color: #0047ab;
+}
+
+.signup-btn {
+  background-color: #fff;
+  color: #0047ab;
+}
+
+.icons {
+  display: flex;
+  gap: 15px;
+  font-size: 22px;
+  margin-left: 15px;
+}
+
+/* HERO SECTION */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #c40000 60%, #0047ab 40%);
+  padding: 4rem 2rem;
+  color: white;
+}
+
+.hero-left {
+  flex: 1;
+}
+
+.hero-left h1 {
+  font-size: 3rem;
+  font-weight: 900;
+}
+
+.coupon-btn {
+  margin-top: 1.5rem;
+  padding: 10px 25px;
+  background-color: black;
+  color: white;
+  border: 2px solid white;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.coupon-btn:hover {
+  background-color: white;
+  color: black;
+}
+
+.hero-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.pizza-banner {
+  width: 300px;
+}
+
+/* PROMO SECTION */
+.promo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  background-color: #111;
+  text-align: center;
+}
+
+.promo-content {
+  flex: 1;
+}
+
+.promo-content h2 {
+  font-size: 2rem;
+  color: white;
+}
+
+.promo-content h3 {
+  font-size: 2.5rem;
+  margin-top: 1rem;
+  color: #0047ab;
+}
+
+.promo-content span {
+  color: #ff0000;
+}
+
+.promo-image img {
+  width: 250px;
+  margin: 1rem 0;
+}
+
+.arrow {
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 10px;
+}
+
+/* FOOTER */
+footer {
+  background-color: #1c1c1c;
+  padding: 2rem;
+}
+
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.footer-columns h4 {
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.footer-columns ul {
+  list-style: none;
+}
+
+.footer-columns ul li a {
+  color: #bbb;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.footer-columns ul li a:hover {
+  color: #fff;
+}
+
+.app-links img {
+  width: 120px;
+  margin-right: 10px;
+}
+
+.socials img {
+  width: 35px;
+  margin-right: 10px;
+}
+
+.footer-bottom {
+  text-align: center;
+  color: #777;
+  font-size: 0.85rem;
+}
