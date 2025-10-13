@@ -197,3 +197,125 @@ footer {
   color: #777;
   font-size: 0.85rem;
 }
+
+/* MENU PAGE */
+.menu-section {
+  background-color: #0047ab;
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+.menu-section h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.menu-btn {
+  background: transparent;
+  border: 2px solid #ff0000;
+  color: white;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.menu-btn.active,
+.menu-btn:hover {
+  background-color: #ff0000;
+  border-color: #ff0000;
+}
+
+.category {
+  margin-top: 2rem;
+}
+
+.category h3 {
+  text-align: left;
+  font-size: 1.5rem;
+  margin: 1rem 0;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.promo-card img {
+  width: 100%;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.promo-card img:hover {
+  transform: scale(1.05);
+}
+
+.food-card {
+  background-color: #222;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  text-align: left;
+}
+
+.food-card img {
+  width: 100px;
+  border-radius: 50%;
+}
+
+.food-info h4 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.food-info p {
+  font-size: 0.9rem;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.order-btn {
+  background-color: #888;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.order-btn:hover {
+  background-color: #ff0000;
+}
+
+.tag {
+  background-color: gray;
+  color: white;
+  font-size: 0.75rem;
+  border-radius: 5px;
+  padding: 2px 5px;
+  margin-left: 5px;
+}
+
+.tag.halal {
+  background-color: red;
+}
+
+.tag.regular {
+  background-color: #007bff;
+}
+

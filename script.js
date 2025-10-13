@@ -4,3 +4,10 @@ document.querySelectorAll('.arrow').forEach(arrow => {
     alert('Promo navigation clicked!');
   });
 });
+
+// Navigate to menu page
+document.querySelectorAll('.order-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    window.location.href = "menu.html";
+  });
+});
