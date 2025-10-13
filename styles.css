@@ -302,6 +302,20 @@ footer {
   background-color: #ff0000;
 }
 
+.order-now-btn {
+  background-color: #888;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.order-now-btn:hover{
+   background-color: #ff0000;
+}
+
 .tag {
   background-color: gray;
   color: white;
