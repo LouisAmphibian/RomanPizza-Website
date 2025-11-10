@@ -6,7 +6,7 @@
 }
 
 body {
-  background-color: #000;
+  background-color: #0047ab;
   color: #fff;
   overflow-x: hidden;
 }
@@ -18,10 +18,51 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
+  color: white;
+  position: relative;
+  padding-bottom: 3rem;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.navbar nav{
+  padding-left: 120px;
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 20px;
+}
+
+.logo{
+ position: absolute;
+  left: 2rem; 
+  bottom: -50px;
+  z-index: 10;
+  margin-right: auto;
+  padding-right: 1.5rem;
 }
 
 .logo img {
-  width: 80px;
+  width: 120px;
+  background-color: linear-gradient(
+    to bottom,
+    #0047ab 50%,
+    #c40000  50%
+  ); 
+  border-radius: 50%; 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+  display: block;
+}
+
+.navbar nav{
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 20px;
 }
 
 .navbar nav a {
@@ -48,12 +89,17 @@ body {
   transition: 0.3s;
 }
 
+.login-btn {
+  border-color: #e60000; /* Bright red border */
+  color: #e60000; /* Bright red text */
+}
+
 .login-btn:hover {
   background-color: #fff;
   color: #0047ab;
 }
 
-.signup-btn {
+.signup-btn:hover {
   background-color: #fff;
   color: #0047ab;
 }
@@ -66,6 +112,12 @@ body {
 }
 
 /* HERO SECTION */
+main{
+ padding-top: 120px;
+ background-color: darkblue;
+ padding-left: 35px;
+}
+
 .hero {
   display: flex;
   align-items: center;
@@ -111,6 +163,10 @@ body {
 }
 
 /* PROMO SECTION */
+.main-wrapper {
+  background-color: #0047ab;
+}
+
 .promo {
   display: flex;
   align-items: center;
