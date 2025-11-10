@@ -6,7 +6,7 @@
 }
 
 body {
-  background-color: #0047ab;
+  background-color: darkblue;
   color: #fff;
   overflow-x: hidden;
 }
@@ -116,19 +116,39 @@ main{
  padding-top: 120px;
  background-color: darkblue;
  padding-left: 35px;
+ position: relative;
 }
 
+
 .hero {
-  display: flex;
-  align-items: center;
+  /*display: flex;*/
+  align-items: flex-start;
   justify-content: space-between;
-  background: linear-gradient(135deg, #c40000 60%, #0047ab 40%);
+  /*background: linear-gradient(135deg, #c40000 60%, #0047ab 40%);*/
+  background-color: #c40000;
   padding: 4rem 2rem;
   color: white;
+  position: relative;
+  z-index: 1;
+  border-top-left-radius: 80px;
+  overflow: hidden;
+  padding-bottom: 0;
+  padding-right: 0;
 }
+
+.hero-top-content{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
 
 .hero-left {
   flex: 1;
+  z-index: 2;
+  padding-top: 1rem;
+  padding-left: 2rem;
 }
 
 .hero-left h1 {
@@ -155,29 +175,66 @@ main{
 .hero-right {
   flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
 }
+
+.hero-right::after{
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left:0;
+  background-color: #c40000;
+  clip-path: polygon(30% 0, 100% 0, 100% 100%, 100% 100%);
+  z-index: 0;
+}
+
+
 
 .pizza-banner {
   width: 300px;
 }
 
 /* PROMO SECTION */
+.hero-bottom-content{
+  padding-left: 2rem;
+  padding-bottom: 0;
+}
+
+.promo-container {
+  display: flex;
+  align-items: center;
+  /*justify-content: center;*/
+  width: 100%;
+  position: relative; /* For absolute positioning of the left arrow */
+}
+
 .main-wrapper {
   background-color: #0047ab;
 }
 
 .promo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  width: 100%; /* Adjust as needed */
+  /*max-width: 1000px;*/
+  height: 350px;
   padding: 2rem;
   background-color: #111;
   text-align: center;
+  display: block;
 }
 
 .promo-content {
-  flex: 1;
+ display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space out image and text/arrow */
+  gap: 20px;
+}
+
+.promo-image {
+  flex-shrink: 0;
 }
 
 .promo-content h2 {
@@ -197,7 +254,35 @@ main{
 
 .promo-image img {
   width: 250px;
-  margin: 1rem 0;
+  margin: 0; /* Removed previous margins */
+  border-top-left-radius: 20px; /* Top left corner rounded */
+  border-top-right-radius: 20px; /* Top right corner rounded */
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  display: block;
+}
+
+.promo-text-and-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align right arrow to the right */
+  flex-grow: 1;
+  text-align: right;
+}
+
+.arrow.left {
+  position: absolute;
+  left: 0; /* Positioned to the very left edge of the .promo-container */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+
+.arrow.right {
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0; /* Remove excess padding */
+  margin-bottom: 10px; /* Space above the note */
 }
 
 .arrow {
@@ -210,6 +295,13 @@ main{
 footer {
   background-color: #1c1c1c;
   padding: 2rem;
+}
+
+.promo-content .note {
+  font-size: 0.8rem;
+  color: #ccc;
+  text-align: right;
+  margin-top: 0;
 }
 
 .footer-columns {
