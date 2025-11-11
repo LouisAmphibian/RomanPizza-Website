@@ -541,5 +541,15 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    const specialImg = document.querySelector("#specialOnly");
+    if(specialImg){
+        specialImg.addEventListener("click", (e)=> {
+            e.preventDefault();
+            console.log('Navigating to specials page');
+            window.location.href = "specials.html"
+
+        });
+    }
+
     console.log("Navigation handlers attached successfully");
 });
