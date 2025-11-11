@@ -21,12 +21,29 @@ body {
   color: white;
   position: relative;
   padding-bottom: 3rem;
+
 }
 
 .nav-left {
   display: flex;
   align-items: center;
   flex-grow: 1;
+}
+
+.navbar nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  
+  transform: translateY(20px); 
+  display: block; 
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  
+  transform: translateY(20px); 
 }
 
 .navbar nav{
@@ -114,11 +131,18 @@ body {
 /* HERO SECTION */
 main{
  padding-top: 120px;
- background-color: darkblue;
  padding-left: 35px;
  position: relative;
 }
 
+main-wrapper {
+  background-color: #0047ab; /* Blue top section */
+  padding-right: 0;
+  height: 150px; /* Define the height of the visible blue section */
+  margin-top: -30px; /* Pull the wrapper up slightly to overlap the navbar bottom padding */
+  position: relative; /* CRITICAL: Sets context for the absolutely positioned pizza image */
+  overflow: visible; /
+}
 
 .hero {
   /*display: flex;*/
@@ -188,14 +212,18 @@ main{
   bottom: 0;
   left:0;
   background-color: #c40000;
-  clip-path: polygon(30% 0, 100% 0, 100% 100%, 100% 100%);
+  clip-path: polygon(180% 0, 100% 0, 100% 100%, 0% 100%);
   z-index: 0;
 }
 
 
 
 .pizza-banner {
-  width: 300px;
+  width: 350px;
+  height: 350px;
+  position: relative;
+  left: -80px;
+  
 }
 
 /* PROMO SECTION */
