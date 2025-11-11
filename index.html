@@ -8,6 +8,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+
+
+   <!-- FIREBASE SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   
   <script defer src="script.js"></script>
 </head>
@@ -20,16 +26,16 @@
 
       <div class="nav-left">
       <nav >
-        <a href="#">ORDER NOW</a> 
-        <a href="#">FIND A STORE</a>
+        <a href="#" id="order-now">ORDER NOW</a> 
+        <a href="#" id="find-store">FIND A STORE</a>
       </nav>
       </div>
      
    
 
     <div class="nav-buttons">
-      <button class="login-btn">LOGIN</button>
-      <button class="signup-btn">SIGNUP</button>
+      <button class="login-btn" id="form-open-login">LOGIN</button>
+      <button class="signup-btn" id="form-open-signup">SIGNUP</button>
       <div class="icons">
         <i class="cart cart-icon">🛒</i> 
         <i class="menu">☰</i>
@@ -74,6 +80,68 @@
   </div>
 </div>
   </main>
+
+  <!--Form-->
+  <div class="form_container">
+    <i class="form_close">✖</i> <div class="form login_form">
+        <form action="#" method="post">
+            <h2>Sign In</h2>
+
+            <div class="input_box">
+                <input type="email" name="email" placeholder="Enter your email" required />
+            </div>
+
+            <div class="input_box">
+                <input type="password" name="password" placeholder="Enter your password" required />
+                <i class="pw_hide">👁️</i> 
+            </div>
+
+            <div class="option_field">
+                <span class="checkbox">
+                    <input type="checkbox" id="check">
+                    <label for="check">Remember me</label>
+                </span>
+                <a href="#" class="forgot_pw">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="button">Sign In Now</button>
+
+            <div class="login_signup">
+                Don't have an account? <a href="#" id="go-signup">SignUp</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="form signup_form">
+        <form action="#" method="post">
+            <h2>Sign Up</h2>
+
+            <div class="input_box">
+                <input type="text" name="name" placeholder="Enter your name" required />
+            </div>
+
+            <div class="input_box">
+                <input type="email" name="email" placeholder="Enter your email" required />
+            </div>
+
+            <div class="input_box">
+                <input type="password" name="password" placeholder="Create password" required />
+                <i class="pw_hide">👁️</i>
+            </div>
+
+            <div class="input_box">
+                <input type="password" name="confirmPassword" placeholder="Confirm password" required />
+                <i class="pw_hide">👁️</i>
+            </div>
+            
+            <button type="submit" class="button">Sign Up Now</button>
+
+            <div class="login_signup">
+                Already have an account? <a href="#" id="go-login">Login</a>
+            </div>
+        </form>
+    </div>
+</div>
  
 
   <footer>
