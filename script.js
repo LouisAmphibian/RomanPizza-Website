@@ -501,10 +501,10 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = { AuthService };
 }
 
-// Simple navigation functionality
+//the btn clicked 
 document.addEventListener("DOMContentLoaded", function() {
     
-    // 1. ORDER NOW button - navigate to menu.html
+    
     const orderNowBtn = document.querySelector("#order-now");
     if (orderNowBtn) {
         orderNowBtn.addEventListener("click", (e) => {
@@ -524,12 +524,20 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Optional: Add click handlers for other navigation if needed
+    
     const findStoreBtn = document.querySelector("#find-store");
     if (findStoreBtn) {
         findStoreBtn.addEventListener("click", (e) => {
             e.preventDefault();
             alert('Find a store feature would open here');
+        });
+    }
+
+    const deliveryBtn = document.querySelector("#delivery");
+   if (deliveryBtn) {
+        deliveryBtn.addEventListener("click", (e) => {
+           e.preventDefault();
+           alert('Delivery page');
         });
     }
 
