@@ -1,7 +1,3 @@
-
-
-const API_BASE_URL = 'https://your-api-domain.com/api'; // Replace with your deployed API URL
-
 class AuthService {
     constructor() {
         this.token = localStorage.getItem('authToken');
@@ -10,79 +6,163 @@ class AuthService {
 
     async login(email, password) {
         try {
-            const response = await fetch(`${API_BASE_URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                this.token = data.token;
-                this.user = data.user;
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Get users from local database
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                this.token = 'local-token-' + Date.now();
+                this.user = { 
+                    displayName: user.name, 
+                    email: user.email,
+                    id: user.id
+                };
                 
-                localStorage.setItem('authToken', data.token);
-                localStorage.setItem('userData', JSON.stringify(data.user));
+                localStorage.setItem('authToken', this.token);
+                localStorage.setItem('userData', JSON.stringify(this.user));
                 
-                return { success: true, user: data.user };
+                return { success: true, user: this.user };
             } else {
-                return { success: false, error: data.error };
+                return { success: false, error: 'Invalid email or password' };
             }
         } catch (error) {
             console.error('Login error:', error);
-            return { success: false, error: 'Network error. Please try again.' };
+            return { success: false, error: 'Login failed. Please try again.' };
         }
     }
 
     async signup(name, email, password) {
         try {
-            const response = await fetch(`${API_BASE_URL}/signup`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, email, password })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                this.token = data.token;
-                this.user = data.user;
-                
-                localStorage.setItem('authToken', data.token);
-                localStorage.setItem('userData', JSON.stringify(data.user));
-                
-                return { success: true, user: data.user };
-            } else {
-                return { success: false, error: data.error };
+            // Validate password strength
+            const passwordValidation = this.validatePassword(password);
+            if (!passwordValidation.isValid) {
+                return { success: false, error: passwordValidation.error };
             }
+
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Get existing users
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            // Check if user already exists
+            if (users.find(u => u.email === email)) {
+                return { success: false, error: 'User already exists with this email' };
+            }
+            
+            // Validate email format
+            if (!this.validateEmail(email)) {
+                return { success: false, error: 'Please enter a valid email address' };
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now().toString(),
+                name: name,
+                email: email,
+                password: password,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            this.token = 'local-token-' + Date.now();
+            this.user = { 
+                displayName: name, 
+                email: email,
+                id: newUser.id
+            };
+            
+            localStorage.setItem('authToken', this.token);
+            localStorage.setItem('userData', JSON.stringify(this.user));
+            
+            return { success: true, user: this.user };
         } catch (error) {
             console.error('Signup error:', error);
-            return { success: false, error: 'Network error. Please try again.' };
+            return { success: false, error: 'Signup failed. Please try again.' };
         }
+    }
+
+    validatePassword(password) {
+        const requirements = {
+            minLength: 8,
+            hasUpperCase: /[A-Z]/.test(password),
+            hasLowerCase: /[a-z]/.test(password),
+            hasNumbers: /\d/.test(password),
+            hasSpecialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+        };
+
+        const errors = [];
+
+        if (password.length < requirements.minLength) {
+            errors.push(`at least ${requirements.minLength} characters`);
+        }
+        if (!requirements.hasUpperCase) {
+            errors.push('one uppercase letter (A-Z)');
+        }
+        if (!requirements.hasLowerCase) {
+            errors.push('one lowercase letter (a-z)');
+        }
+        if (!requirements.hasNumbers) {
+            errors.push('one number (0-9)');
+        }
+        if (!requirements.hasSpecialChar) {
+            errors.push('one special character (!@#$%^&*)');
+        }
+
+        if (errors.length > 0) {
+            return {
+                isValid: false,
+                error: `Password must contain: ${errors.join(', ')}`,
+                requirements: requirements
+            };
+        }
+
+        return {
+            isValid: true,
+            requirements: requirements
+        };
+    }
+
+    validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    getPasswordStrength(password) {
+        let strength = 0;
+        
+        // Length check
+        if (password.length >= 8) strength++;
+        if (password.length >= 12) strength++;
+        
+        // Character type checks
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/\d/.test(password)) strength++;
+        if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) strength++;
+        
+        return {
+            score: strength,
+            level: strength >= 6 ? 'strong' : strength >= 4 ? 'medium' : 'weak',
+            maxScore: 6
+        };
     }
 
     async verifyToken() {
         if (!this.token) return false;
 
         try {
-            const response = await fetch(`${API_BASE_URL}/verify-token`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ token: this.token })
-            });
-
-            const data = await response.json();
-
-            if (data.valid) {
-                this.user = data.user;
-                localStorage.setItem('userData', JSON.stringify(data.user));
+            // Check if token exists in localStorage
+            const storedToken = localStorage.getItem('authToken');
+            const userData = localStorage.getItem('userData');
+            
+            if (storedToken === this.token && userData) {
+                this.user = JSON.parse(userData);
                 return true;
             } else {
                 this.logout();
@@ -90,6 +170,7 @@ class AuthService {
             }
         } catch (error) {
             console.error('Token verification error:', error);
+            this.logout();
             return false;
         }
     }
@@ -104,16 +185,32 @@ class AuthService {
     isAuthenticated() {
         return !!this.token && !!this.user;
     }
+
+    // Helper method to initialize sample data
+    initializeSampleData() {
+        if (!localStorage.getItem('users')) {
+            const sampleUsers = [
+                {
+                    id: '1',
+                    name: 'Demo User',
+                    email: 'demo@example.com',
+                    password: 'Password123!',
+                    createdAt: new Date().toISOString()
+                }
+            ];
+            localStorage.setItem('users', JSON.stringify(sampleUsers));
+        }
+    }
 }
 
 // Initialize Auth Service
 const authService = new AuthService();
+authService.initializeSampleData();
 
 // DOM Elements
 const loginOpenBtn = document.querySelector("#form-open-login");
 const signupOpenBtn = document.querySelector("#form-open-signup");
 const body = document.body;
-const formContainer = document.querySelector(".form_container");
 const formCloseBtn = document.querySelector(".form_close");
 const goToSignupLink = document.querySelector("#go-signup");
 const goToLoginLink = document.querySelector("#go-login");
@@ -121,16 +218,105 @@ const pwShowHide = document.querySelectorAll(".pw_hide");
 const signInForm = document.querySelector('.login_form form');
 const signUpForm = document.querySelector('.signup_form form');
 
+// Password strength indicator elements
+let passwordStrengthIndicator = null;
+let passwordRequirementsList = null;
+
+// Initialize password strength UI
+function initializePasswordStrengthUI() {
+    if (signUpForm) {
+        const passwordInput = signUpForm.querySelector('input[type="password"]');
+        if (passwordInput) {
+            // Create password strength indicator
+            passwordStrengthIndicator = document.createElement('div');
+            passwordStrengthIndicator.className = 'password-strength';
+            passwordStrengthIndicator.style.cssText = `
+                margin-top: 5px;
+                font-size: 12px;
+                transition: all 0.3s ease;
+            `;
+            
+            // Create requirements list
+            passwordRequirementsList = document.createElement('div');
+            passwordRequirementsList.className = 'password-requirements';
+            passwordRequirementsList.style.cssText = `
+                margin-top: 10px;
+                font-size: 11px;
+                color: #666;
+                display: none;
+            `;
+            
+            passwordInput.parentNode.appendChild(passwordStrengthIndicator);
+            passwordInput.parentNode.appendChild(passwordRequirementsList);
+            
+            // Add real-time password strength checking
+            passwordInput.addEventListener('input', updatePasswordStrength);
+            passwordInput.addEventListener('focus', showPasswordRequirements);
+            passwordInput.addEventListener('blur', hidePasswordRequirements);
+        }
+    }
+}
+
+function updatePasswordStrength(e) {
+    const password = e.target.value;
+    const strength = authService.getPasswordStrength(password);
+    
+    let strengthText = '';
+    let strengthColor = '';
+    
+    switch (strength.level) {
+        case 'weak':
+            strengthText = 'Weak Password';
+            strengthColor = '#ff4444';
+            break;
+        case 'medium':
+            strengthText = 'Medium Password';
+            strengthColor = '#ffaa00';
+            break;
+        case 'strong':
+            strengthText = 'Strong Password';
+            strengthColor = '#00c851';
+            break;
+    }
+    
+    passwordStrengthIndicator.textContent = strengthText;
+    passwordStrengthIndicator.style.color = strengthColor;
+    passwordStrengthIndicator.style.fontWeight = '600';
+}
+
+function showPasswordRequirements() {
+    const requirements = [
+        'At least 8 characters long',
+        'One uppercase letter (A-Z)',
+        'One lowercase letter (a-z)',
+        'One number (0-9)',
+        'One special character (!@#$%^&*)'
+    ];
+    
+    passwordRequirementsList.innerHTML = requirements.map(req => 
+        `<div style="margin: 2px 0;">• ${req}</div>`
+    ).join('');
+    passwordRequirementsList.style.display = 'block';
+}
+
+function hidePasswordRequirements() {
+    // Only hide if password field is empty
+    const passwordInput = signUpForm.querySelector('input[type="password"]');
+    if (passwordInput.value === '') {
+        passwordRequirementsList.style.display = 'none';
+    }
+}
+
 // Password Show/Hide Functionality
 pwShowHide.forEach((icon) => {
     icon.addEventListener("click", () => {
         let getPwInput = icon.parentElement.querySelector("input");
         if (getPwInput.type === "password") {
             getPwInput.type = "text";
-            icon.textContent = "🙈";
+            icon.classList.replace("uil-eye-slash", "uil-eye");
         } else {
             getPwInput.type = "password";
-            icon.textContent = "👁️"; 
+            icon.classList.replace("uil-eye", "uil-eye-slash");
         }
     });
 });
@@ -177,9 +363,8 @@ if (signInForm) {
     signInForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const formData = new FormData(signInForm);
-        const email = formData.get('email');
-        const password = formData.get('password');
+        const email = signInForm.querySelector('input[type="email"]').value;
+        const password = signInForm.querySelector('input[type="password"]').value;
 
         const submitButton = signInForm.querySelector('.button');
         const originalText = submitButton.textContent;
@@ -215,11 +400,10 @@ if (signUpForm) {
     signUpForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const formData = new FormData(signUpForm);
-        const name = formData.get('name');
-        const email = formData.get('email');
-        const password = formData.get('password');
-        const confirmPassword = formData.get('confirmPassword');
+        const name = signUpForm.querySelector('input[placeholder="Enter your name"]').value;
+        const email = signUpForm.querySelector('input[type="email"]').value;
+        const password = signUpForm.querySelector('input[type="password"]').value;
+        const confirmPassword = signUpForm.querySelectorAll('input[type="password"]')[1].value;
 
         // Client-side validation
         if (password !== confirmPassword) {
@@ -227,8 +411,9 @@ if (signUpForm) {
             return;
         }
 
-        if (password.length < 6) {
-            showNotification('Password must be at least 6 characters!', 'error');
+        // Validate email format
+        if (!authService.validateEmail(email)) {
+            showNotification('Please enter a valid email address', 'error');
             return;
         }
 
@@ -270,7 +455,7 @@ function updateHeaderForLoggedInUser(displayName) {
 
     // Remove login button
     if (loginBtn) {
-        loginBtn.remove();
+        loginBtn.style.display = 'none';
     }
 
     // Update signup button to logout
@@ -280,31 +465,34 @@ function updateHeaderForLoggedInUser(displayName) {
         signupBtn.classList.remove('signup-btn');
         signupBtn.classList.add('logout-btn');
         
-        // Remove existing click listeners by cloning and replacing
+        // Remove existing click listeners
         const newSignupBtn = signupBtn.cloneNode(true);
         signupBtn.parentNode.replaceChild(newSignupBtn, signupBtn);
         
-        // Add logout functionality to the new button
+        // Add logout functionality
         newSignupBtn.addEventListener('click', handleLogout);
     }
 
     // Create user display element
     const userDisplay = document.createElement('span');
     userDisplay.className = 'user-display';
-    userDisplay.textContent = displayName;
+    userDisplay.textContent = `Hi, ${displayName}`;
     userDisplay.style.cssText = `
         color: #fff;
         font-weight: 600;
-        padding: 8px 20px;
+        padding: 8px 16px;
         background-color: #e60000;
-        border-radius: 25px;
+        border-radius: 20px;
         margin-right: 10px;
         font-size: 14px;
     `;
 
     // Insert user display before logout button
     if (navButtons) {
-        navButtons.insertBefore(userDisplay, navButtons.querySelector('#logout-btn'));
+        const logoutBtn = navButtons.querySelector('#logout-btn');
+        if (logoutBtn) {
+            navButtons.insertBefore(userDisplay, logoutBtn);
+        }
     }
 }
 
@@ -312,7 +500,7 @@ function handleLogout() {
     authService.logout();
     showNotification('Logged out successfully!', 'success');
     
-    // Refresh page to reset UI completely
+    // Refresh page to reset UI
     setTimeout(() => {
         location.reload();
     }, 1000);
@@ -344,36 +532,19 @@ function showNotification(message, type) {
 
     document.body.appendChild(notification);
 
-    // Add CSS animation
-    if (!document.querySelector('#notification-styles')) {
-        const style = document.createElement('style');
-        style.id = 'notification-styles';
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
     // Auto remove after 3 seconds
     setTimeout(() => {
         if (notification.parentNode) {
-            notification.style.animation = 'slideOut 0.3s ease-in';
-            notification.style.transform = 'translateX(100%)';
-            notification.style.opacity = '0';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 300);
+            notification.remove();
         }
     }, 3000);
 }
 
 // Initialize app on load
 document.addEventListener("DOMContentLoaded", function() {
+    // Initialize password strength UI
+    initializePasswordStrengthUI();
+    
     // Check if user is already logged in
     if (authService.isAuthenticated()) {
         authService.verifyToken().then(isValid => {
@@ -383,148 +554,23 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Example script for arrow navigation
-    document.querySelectorAll('.arrow').forEach(arrow => {
-        arrow.addEventListener('click', () => {
-            alert('Promo navigation clicked!');
-        });
-    });
-
-    // Navigate to cart
-    document.querySelectorAll('.cart-icon').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = "cart.html";
-        });
-    });
-
-    // Navigate back to home page
-    document.querySelectorAll('.logo').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = "index.html";
-        });
-    });
-
-    // **Different navigation based on which page we're on**
-    
-    // If we're on index.html (home page), ORDER NOW goes to menu.html
-    if (window.location.pathname.includes('index.html') || 
-        window.location.pathname === '/' || 
-        window.location.pathname.endsWith('/')) {
-        
-        document.querySelectorAll('.order-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                console.log('Navigating to menu page');
-                window.location.href = "menu.html";
-            });
-        });
-    }
-    
-    // If we're on menu.html, ORDER NOW goes to specials.html
-    else if (window.location.pathname.includes('menu.html')) {
-        document.querySelectorAll('.order-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                console.log('Navigating to specials page');
-                window.location.href = "specials.html";
-            });
-        });
-
-        // Also handle promo cards on menu page
-        document.querySelectorAll('.promo-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                e.preventDefault();
-                console.log('Promo card clicked, going to specials');
-                window.location.href = "specials.html";
-            });
-        });
-    }
-
-    // If we're on specials.html, handle add to combo buttons
-    else if (window.location.pathname.includes('specials.html')) {
-        document.querySelectorAll('.add-to-combo-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                // In a real app, you would add the item to a cart object
-                button.textContent = 'ADDED!';
-                button.style.backgroundColor = '#28a745'; // Green color
-                
-                // Navigate to cart after a short delay
-                setTimeout(() => {
-                    window.location.href = 'cart.html';
-                }, 1000);
-            });
-        });
-    }
-
-    // Menu buttons functionality (category switching)
-    const menuButtons = document.querySelectorAll('.menu-btn');
-    if (menuButtons.length > 0) {
-        menuButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Remove active class from all buttons
-                menuButtons.forEach(b => b.classList.remove('active'));
-                // Add active class to clicked button
-                this.classList.add('active');
-                
-                // Here you would typically show/hide different menu sections
-                const category = this.textContent.toLowerCase();
-                console.log('Switching to category:', category);
-            });
-        });
-    }
-
-    // Handle coupon button
-    const couponBtn = document.querySelector('.coupon-btn');
-    if (couponBtn) {
-        couponBtn.addEventListener('click', function() {
-            if (authService.isAuthenticated()) {
-                showNotification('Coupon applied successfully!', 'success');
-            } else {
-                showNotification('Please login to get your coupon!', 'error');
-                // Optionally open login form
-                body.classList.add("show-form", "show-login");
-            }
-        });
-    }
-});
-
-// Error handling for fetch requests
-window.addEventListener('unhandledrejection', event => {
-    console.error('Unhandled promise rejection:', event.reason);
-    showNotification('A network error occurred. Please check your connection.', 'error');
-});
-
-// Export for testing purposes (optional)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { AuthService };
-}
-
-//the btn clicked 
-document.addEventListener("DOMContentLoaded", function() {
-    
-    
+    // Navigation handlers
     const orderNowBtn = document.querySelector("#order-now");
     if (orderNowBtn) {
         orderNowBtn.addEventListener("click", (e) => {
             e.preventDefault();
-            console.log('Navigating to menu page');
             window.location.href = "menu.html";
         });
     }
 
-    // 2. Cart icon - navigate to cart.html
     const cartIcon = document.querySelector(".cart-icon");
     if (cartIcon) {
         cartIcon.addEventListener("click", (e) => {
             e.preventDefault();
-            console.log('Navigating to cart page');
             window.location.href = "cart.html";
         });
     }
 
-    
     const findStoreBtn = document.querySelector("#find-store");
     if (findStoreBtn) {
         findStoreBtn.addEventListener("click", (e) => {
@@ -534,10 +580,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     const deliveryBtn = document.querySelector("#delivery");
-   if (deliveryBtn) {
+    if (deliveryBtn) {
         deliveryBtn.addEventListener("click", (e) => {
-           e.preventDefault();
-           alert('Delivery page');
+            e.preventDefault();
+            alert('Delivery information would show here');
         });
     }
 
@@ -545,11 +591,17 @@ document.addEventListener("DOMContentLoaded", function() {
     if(specialImg){
         specialImg.addEventListener("click", (e)=> {
             e.preventDefault();
-            console.log('Navigating to specials page');
-            window.location.href = "specials.html"
-
+            window.location.href = "specials.html";
         });
     }
 
-    console.log("Navigation handlers attached successfully");
+    // Logo click - go to home
+    document.querySelectorAll('.logo').forEach(logo => {
+        logo.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = "index.html";
+        });
+    });
+
+    console.log("Auth system with password validation initialized successfully");
 });
