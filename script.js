@@ -358,6 +358,72 @@ if (goToLoginLink) {
     });
 }
 
+
+//show authentication required message
+function showAuthRequiredMessage() {
+    showNotification('OOPS! You need to login or signup to access the cart.', 'error');
+    
+    // Show login form after a short delay
+    setTimeout(() => {
+        body.classList.add("show-form", "show-login");
+        body.classList.remove("show-signup");
+    }, 1500);
+}
+
+//function to check authentication before navigation
+function requireAuth(redirectTo) {
+    if (!authService.isAuthenticated()) {
+        // Store the intended destination
+        sessionStorage.setItem('intendedRedirect', redirectTo);
+        // Show custom message and login form
+       showAuthRequiredMessage();
+        return false;
+    }
+    return true;
+}
+
+// function to handle successful login redirects
+function handlePostLoginRedirect() {
+    const intendedRedirect = sessionStorage.getItem('intendedRedirect');
+    if (intendedRedirect && authService.isAuthenticated()) {
+        sessionStorage.removeItem('intendedRedirect');
+        window.location.href = intendedRedirect;
+    }
+}
+
+  const cartIcon = document.querySelector(".cart-icon");
+    if (cartIcon) {
+        cartIcon.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            //Check if user authenticated 
+            if(authService.isAuthenticated()){
+                window.location.href = "cart.html";
+            }  else {
+            requireAuth("cart.html");
+        }
+        });
+    }
+
+// Protect any direct links to order.html or cart.html
+// Add this function to protect pages that require authentication
+function protectPage() {
+    const currentPage = window.location.pathname;
+    const protectedPages = ['cart.html', 'order.html', 'checkout.html']; // Add any other protected pages
+    
+    const isProtectedPage = protectedPages.some(page => currentPage.includes(page));
+    
+    if (isProtectedPage && !authService.isAuthenticated()) {
+        sessionStorage.setItem('intendedRedirect', currentPage);
+        showAuthRequiredMessage();
+        // Prevent accessing the page by redirecting to home after showing message
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 2000);
+        return;
+    }
+}
+
 // Form Submission Handlers
 if (signInForm) {
     signInForm.addEventListener('submit', async (e) => {
@@ -386,6 +452,12 @@ if (signInForm) {
             signInForm.reset();
             
             showNotification('Login successful!', 'success');
+
+            // Handle redirect if user was trying to access protected page
+            setTimeout(() => {
+                handlePostLoginRedirect();
+            }, 1000);
+
         } else {
             showNotification(result.error || 'Login failed!', 'error');
         }
@@ -554,6 +626,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // Protect pages that require authentication
+    protectPage();
+
     // Navigation handlers
     const orderNowBtn = document.querySelector("#order-now");
     if (orderNowBtn) {
@@ -563,13 +638,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    const cartIcon = document.querySelector(".cart-icon");
-    if (cartIcon) {
-        cartIcon.addEventListener("click", (e) => {
-            e.preventDefault();
-            window.location.href = "cart.html";
-        });
-    }
+  
 
     const findStoreBtn = document.querySelector("#find-store");
     if (findStoreBtn) {
