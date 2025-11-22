@@ -595,6 +595,15 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    /*
+    const specialBtn =document.querySelector('#specials');
+    if(specialBtn){
+        specialBtn.addEventListener("click", (e)=>{
+            e.preventDefault();
+            window.location.href = "specials.html"
+        });
+    }*/
+
     // Logo click - go to home
     document.querySelectorAll('.logo').forEach(logo => {
         logo.addEventListener('click', (e) => {
