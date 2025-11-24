@@ -81,6 +81,23 @@
 </div>
   </main>
 
+  <!--Wheel game-->
+  <section class="wheel_container" id="wheelModal">
+    <div class="wheel_content">
+        <span class="wheel_close">&times;</span>
+        <h2>🎉 Spin to Win! 🎉</h2>
+        <p class="wheel-instruction">Spin the wheel for a chance to win an instant prize!</p>
+        
+        <div class="wheel-box">
+            <canvas id="prizeWheel" width="300" height="300"></canvas>
+            <button class="spin-button" id="spinBtn">SPIN NOW</button>
+        </div>
+
+        <p class="result-display" id="resultDisplay"></p>
+        <button class="claim-button hidden" id="claimBtn">Claim Prize & Sign Up</button>
+    </div>
+</section>
+
   <!--Form-->
   <div class="form_container">
     <i class="form_close">✖</i> <div class="form login_form">

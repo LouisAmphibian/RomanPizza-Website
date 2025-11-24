@@ -207,9 +207,10 @@ class AuthService {
 const authService = new AuthService();
 authService.initializeSampleData();
 
+//Initialize Wheel Game 
+let wheelGame  = null;
+
 // DOM Elements
-const loginOpenBtn = document.querySelector("#form-open-login");
-const signupOpenBtn = document.querySelector("#form-open-signup");
 const body = document.body;
 const formCloseBtn = document.querySelector(".form_close");
 const goToSignupLink = document.querySelector("#go-signup");
@@ -217,6 +218,13 @@ const goToLoginLink = document.querySelector("#go-login");
 const pwShowHide = document.querySelectorAll(".pw_hide");
 const signInForm = document.querySelector('.login_form form');
 const signUpForm = document.querySelector('.signup_form form');
+const loginOpenBtn = document.querySelector("#form-open-login");
+const signupOpenBtn = document.querySelector("#form-open-signup");
+
+//wheel dom
+const wheelModal = document.querySelector("#wheelModal");
+const wheelCloseBtn = document.querySelector(".wheel_close");
+const couponBtn = document.querySelector(".coupon-btn");
 
 // Password strength indicator elements
 let passwordStrengthIndicator = null;
@@ -629,6 +637,64 @@ document.addEventListener("DOMContentLoaded", function() {
     // Protect pages that require authentication
     protectPage();
 
+    // Find the coupon button and add the new logic
+if (couponBtn) {
+    couponBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        // 1. Check if the user is logged in
+        if (authService.isAuthenticated()) {
+            showNotification(`Hi ${authService.user.displayName}, this offer is for new users!`, 'info');
+            return;
+        }
+
+        // 2. Check if the user has already spun
+        if (localStorage.getItem('hasSpunTheWheel') && !localStorage.getItem('wheelPrize')) {
+            showNotification('You have already spun the wheel. Welcome back!', 'info');
+            body.classList.add("show-form", "show-login");
+            body.classList.remove("show-signup");
+            return;
+        }
+
+        // 3. Show the wheel modal
+        body.classList.add("show-form", "show-wheel");
+        body.classList.remove("show-login", "show-signup");
+        wheelGame.resetWheel(); // Ensure wheel is reset on open
+    });
+}
+
+// Add Wheel Close Listener
+if (wheelCloseBtn) {
+    wheelCloseBtn.addEventListener("click", () => {
+        body.classList.remove("show-form", "show-wheel");
+    });
+}
+
+// Update your existing Form Toggling Functions to handle the 'show-wheel' class:
+
+if (loginOpenBtn) {
+    loginOpenBtn.addEventListener("click", () => {
+        body.classList.add("show-form", "show-login");
+        // Ensure wheel is closed
+        body.classList.remove("show-signup", "show-wheel"); 
+    });
+}
+
+if (signupOpenBtn) {
+    signupOpenBtn.addEventListener("click", () => {
+        body.classList.add("show-form", "show-signup");
+        // Ensure wheel is closed
+        body.classList.remove("show-login", "show-wheel"); 
+    });
+}
+
+if (formCloseBtn) {
+    formCloseBtn.addEventListener("click", () => {
+        // Updated to remove 'show-wheel'
+        body.classList.remove("show-form", "show-login", "show-signup", "show-wheel");
+    });
+}
+
     // Navigation handlers
     const orderNowBtn = document.querySelector("#order-now");
     if (orderNowBtn) {
@@ -683,3 +749,194 @@ document.addEventListener("DOMContentLoaded", function() {
 
     console.log("Auth system with password validation initialized successfully");
 });
+
+//Class for wheelGame
+class WheelGame {
+    constructor(){
+        this.canvas = document.getElementById('prizeWheel');
+        this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+        this.spinBtn = document.getElementById('spinBtn');
+        this.resultDisplay = document.getElementById('resultDisplay');
+        this.claimBtn = document.getElementById('claimBtn');
+
+        // Define prize segments and their weights (sum of weights must be 100)
+        // Probability: 20% (10/50)
+        this.prizes = [
+            { id: 1, text: "20% OFF Pizza", color: "#FFC107", weight: 15 },
+            { id: 2, text: "Free Dessert", color: "#FF5722", weight: 10 },
+            { id: 3, text: "30% OFF Order", color: "#4CAF50", weight: 5 }, // Harder to win
+            { id: 4, text: "Free Drink", color: "#00BCD4", weight: 10 },
+            { id: 5, text: "Try Again", color: "#9E9E9E", weight: 60 } // Easiest outcome
+        ];
+
+        this.totalWeight = this.prizes.reduce((sum, p) => sum + p.weight, 0);
+
+        this.arc = (2* Math.PI )/ this.totalWeight ; // Calculate angle based on total segments
+
+        this.spinTime = 0;
+        this.spinTimeTotal = 0;
+        this.startAngle = 0;
+        this.isSpinning = false;
+        this.finalPrize = null;
+
+        if (this.canvas && this.spinBtn && this.claimBtn) {
+            this.drawWheel();
+            this.spinBtn.addEventListener('click', () => this.startSpin());
+            this.claimBtn.addEventListener('click', () => this.handleClaimPrize());
+        }else if (this.canvas){
+            this.drawWheel();
+        }
+    }
+
+    drawWheel(){
+        if (!this.ctx) return;
+        const outsideRadius = 150;
+        const textRadius = 120;
+        const insideRadius = 0;
+
+        this.ctx.clearRect(0, 0, 300, 300);
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 4;
+        this.ctx.font = '10px sans-serif';
+
+        let currentStartAngle = this.startAngle;
+
+        this.prizes.forEach(prize=>{
+            const currentArc = this.arc * prize.weight;
+            
+            this.ctx.fillStyle = prize.color;
+            
+            this.ctx.beginPath();
+            this.ctx.arc(150, 150, outsideRadius, currentStartAngle, currentStartAngle + currentArc, false);
+            this.ctx.arc(150, 150, insideRadius, currentStartAngle + currentArc, currentStartAngle, true);
+            this.ctx.stroke();
+            this.ctx.fill();
+            
+            this.ctx.save();
+            this.ctx.fillStyle = "white";
+            this.ctx.translate(
+                150 + Math.cos(currentStartAngle + currentArc / 2) * textRadius,
+                150 + Math.sin(currentStartAngle + currentArc / 2) * textRadius
+            );
+            this.ctx.rotate(currentStartAngle + currentArc / 2 + Math.PI / 2);
+            const text = prize.text;
+            this.ctx.fillText(text, -this.ctx.measureText(text).width / 2, 0);
+            this.ctx.restore();
+            
+            currentStartAngle += currentArc;
+        });
+
+        // Draw the pointer (triangle)
+        this.ctx.fillStyle = "black";
+        this.ctx.beginPath();
+        this.ctx.moveTo(150 - 10, 150 - (outsideRadius + 15));
+        this.ctx.lineTo(150 + 10, 150 - (outsideRadius + 15));
+        this.ctx.lineTo(150, 150 - (outsideRadius - 5));
+        this.ctx.fill();
+    }
+
+    startSpin() {
+        if (this.isSpinning) return;
+        
+        // Check if the user has already spun (using localStorage)
+        if (localStorage.getItem('hasSpunTheWheel')) {
+            showNotification('You have already played the Spin to Win game!', 'error');
+            return;
+        }
+
+        this.isSpinning = true;
+        this.spinBtn.disabled = true;
+        this.claimBtn.classList.add('hidden');
+        this.resultDisplay.textContent = 'Good Luck!';
+        
+        this.spinTime = 0;
+        this.spinTimeTotal = Math.random() * 3000 + 4000; // 4 to 7 seconds spin
+        this.rotateWheel();
+    }
+
+    rotateWheel() {
+        this.spinTime += 30;
+        if (this.spinTime >= this.spinTimeTotal) {
+            this.stopSpin();
+            return;
+        }
+        
+        const spinAngle = this.getSpinAngle();
+        this.startAngle += spinAngle;
+        this.drawWheel();
+        requestAnimationFrame(() => this.rotateWheel());
+    }
+
+    getSpinAngle() {
+        const spinSpeed = 2 * Math.PI / this.spinTimeTotal;
+        const normalizedTime = (this.spinTimeTotal - this.spinTime) / this.spinTimeTotal;
+        return spinSpeed * normalizedTime * 30; // Decelerating spin
+    }
+
+    stopSpin() {
+       this.isSpinning = false;
+        this.spinBtn.disabled = false;
+
+        // Normalize the current angle relative to the center top (pointer location)
+        // Add PI/2 (90 degrees) to align the pointer (which is at the top) with the start of the first segment (which is usually on the right/0 degrees).
+        let currentAngle = (this.startAngle + Math.PI / 2) % (2 * Math.PI); 
+        if (currentAngle < 0) currentAngle += 2 * Math.PI;
+
+        let cumulativeAngle = 0;
+        let winningPrize = null;
+        
+        // Find the winning prize segment under the pointer
+        // The wheel draws segments counter-clockwise, so we iterate and check
+        for (const prize of this.prizes) {
+            const prizeArc = this.arc * prize.weight; // Angle of this prize segment (in radians)
+            
+            if (currentAngle >= cumulativeAngle && currentAngle < cumulativeAngle + prizeArc) {
+                winningPrize = prize;
+                break;
+            }
+            cumulativeAngle += prizeArc;
+        }
+
+        this.finalPrize = winningPrize || { text: "Error", color: "black" };
+        this.displayResult();
+
+        // Mark that the user has spun
+        localStorage.setItem('hasSpunTheWheel', 'true');
+    }
+
+    displayResult() {
+        this.resultDisplay.style.color = this.finalPrize.color;
+        
+        if (this.finalPrize.text === 'Try Again') {
+            this.resultDisplay.textContent = 'Aw, shucks! ' + this.finalPrize.text + '. Better luck next time!';
+            this.claimBtn.classList.add('hidden');
+        } else {
+            this.resultDisplay.textContent = `🥳 Congratulations! You won: ${this.finalPrize.text}!`;
+            this.claimBtn.classList.remove('hidden');
+            // Store the prize to apply after signup
+            sessionStorage.setItem('wheelPrize', this.finalPrize.text); 
+        }
+    }
+
+    handleClaimPrize() {
+        // Close the wheel modal
+        body.classList.remove("show-wheel");
+        
+        // Transition to the signup form
+        body.classList.add("show-form", "show-signup");
+        body.classList.remove("show-login");
+        
+        // You can pre-fill the form or display the prize message there if needed
+        showNotification(`Your prize of "${this.finalPrize.text}" is secured! Complete signup to claim.`, 'success');
+        this.resetWheel();
+    }
+
+    resetWheel() {
+        this.finalPrize = null;
+        this.spinTime = 0;
+        this.startAngle = 0;
+        this.drawWheel();
+        this.resultDisplay.textContent = 'Spin to Win!';
+        this.claimBtn.classList.add('hidden');
+    }
+}

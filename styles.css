@@ -422,8 +422,7 @@ main-wrapper {
 .promo-content {
  display: flex;
   align-items: center;
-  justify-content: space-between; /* Space out image and text/arrow */
-  width: 100%;
+  justify-content: space-between; 
   padding: 0 2rem;
 }
 
@@ -492,11 +491,11 @@ main-wrapper {
     border-radius: 50%;
      transform: translateY(150%);
     padding: 10px;
-    margin-right: -20px; /* Pull it slightly out to the right */
-    align-self: center; /* Center it vertically within its flex container */
-    margin-top: 0; /* Remove any potential top margin */
-    margin-bottom: 0; /* Remove any potential bottom margin */
-    font-size: 2rem; /* Keep the size consistent */
+    margin-right: -20px; 
+    align-self: center; 
+    margin-top: 0; 
+    margin-bottom: 0; 
+    font-size: 2rem;
     cursor: pointer;
 }
 
@@ -698,10 +697,8 @@ footer {
   background-color: #007bff;
 }
 
-/* ADD THESE STYLES TO YOUR EXISTING styles.css FILE */
 
 /* --- STYLES FOR SPECIALS PAGE (specials.html) --- */
-
 .specials-page {
     background-color: #0047ab;
     padding: 2rem 1rem;
@@ -808,7 +805,6 @@ footer {
 
 
 /* --- STYLES FOR CART PAGE (cart.html) --- */
-
 .cart-page {
     background-color: #00337c; /* Darker blue background */
     padding: 2rem;
@@ -971,3 +967,141 @@ footer {
     text-decoration: none;
     color: white;
 }
+
+/*--Notification  Animation ---*/
+@keyframes slideIn{
+  from{
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Password Strength Indicator Styles --- */
+.password-strength {
+    margin-top: 5px;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    font-weight: 600; /* Already set by JS, but good to have a default */
+}
+
+.password-requirements {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #666;
+    /* Display controlled by JS: display: none; */
+    padding-left: 5px; /* Slight indentation */
+    line-height: 1.4;
+}
+
+
+/* --- SPINNING WHEEL STYLES --- */
+.wheel_container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1);
+    z-index: 100;
+    max-width: 400px;
+    width: 90%;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease-out;
+    text-align: center;
+    color: #0b0217;
+}
+
+body.show-form.show-wheel .wheel_container {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.wheel_close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: #0b0217;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.wheel_container h2 {
+    font-size: 24px;
+    color: #c40000;
+    margin-bottom: 10px;
+}
+
+.wheel-instruction {
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.wheel-box {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#prizeWheel {
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border: 5px solid #0047ab;
+}
+
+.spin-button {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #c40000;
+    color: white;
+    border: 4px solid #fff;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.spin-button:hover {
+    background-color: #ff0000;
+}
+
+.spin-button:disabled {
+    background-color: #888;
+    cursor: not-allowed;
+}
+
+.result-display {
+    min-height: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.claim-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+}
+
+.claim-button.hidden {
+    display: none;
+}
+
