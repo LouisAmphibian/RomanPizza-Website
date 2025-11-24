@@ -622,6 +622,8 @@ function showNotification(message, type) {
 
 // Initialize app on load
 document.addEventListener("DOMContentLoaded", function() {
+     console.log('DOM loaded, initializing app...');
+
     // Initialize password strength UI
     initializePasswordStrengthUI();
     
@@ -634,6 +636,10 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // Initialize Wheel Game - This is crucial!
+    console.log('Initializing wheel game...');
+    wheelGame = new WheelGame();
+
     // Protect pages that require authentication
     protectPage();
 
@@ -641,6 +647,7 @@ document.addEventListener("DOMContentLoaded", function() {
 if (couponBtn) {
     couponBtn.addEventListener("click", (e) => {
         e.preventDefault();
+        console.log('Coupon button clicked');
 
         // 1. Check if the user is logged in
         if (authService.isAuthenticated()) {
@@ -649,7 +656,7 @@ if (couponBtn) {
         }
 
         // 2. Check if the user has already spun
-        if (localStorage.getItem('hasSpunTheWheel') && !localStorage.getItem('wheelPrize')) {
+        if (localStorage.getItem('hasSpunTheWheel')) {
             showNotification('You have already spun the wheel. Welcome back!', 'info');
             body.classList.add("show-form", "show-login");
             body.classList.remove("show-signup");
@@ -659,7 +666,10 @@ if (couponBtn) {
         // 3. Show the wheel modal
         body.classList.add("show-form", "show-wheel");
         body.classList.remove("show-login", "show-signup");
-        wheelGame.resetWheel(); // Ensure wheel is reset on open
+        
+        if(wheelGame){
+             wheelGame.resetWheel(); // Ensure wheel is reset on open
+        }
     });
 }
 
@@ -750,6 +760,9 @@ if (formCloseBtn) {
     console.log("Auth system with password validation initialized successfully");
 });
 
+
+
+
 //Class for wheelGame
 class WheelGame {
     constructor(){
@@ -779,46 +792,73 @@ class WheelGame {
         this.isSpinning = false;
         this.finalPrize = null;
 
+       this.init()
+    }
+
+    init(){
         if (this.canvas && this.spinBtn && this.claimBtn) {
+            console.log('WheelGame initialized successfully');
             this.drawWheel();
+            
+            // Remove any existing event listeners and add new ones
+            this.spinBtn.replaceWith(this.spinBtn.cloneNode(true));
+            this.claimBtn.replaceWith(this.claimBtn.cloneNode(true));
+            
+            // Get fresh references after cloning
+            this.spinBtn = document.getElementById('spinBtn');
+            this.claimBtn = document.getElementById('claimBtn');
+            
             this.spinBtn.addEventListener('click', () => this.startSpin());
             this.claimBtn.addEventListener('click', () => this.handleClaimPrize());
-        }else if (this.canvas){
-            this.drawWheel();
+        } else {
+            console.error('Wheel elements not found:', {
+                canvas: !!this.canvas,
+                spinBtn: !!this.spinBtn,
+                claimBtn: !!this.claimBtn
+            });
         }
     }
 
     drawWheel(){
-        if (!this.ctx) return;
-        const outsideRadius = 150;
-        const textRadius = 120;
-        const insideRadius = 0;
+        if (!this.ctx) {
+            console.error('Canvas context not available');
+            return;
+        }
+        
+        const outsideRadius = 140;
+        const textRadius = 100;
+        const insideRadius = 20;
+        const centerX = 150;
+        const centerY = 150;
 
         this.ctx.clearRect(0, 0, 300, 300);
         this.ctx.strokeStyle = "white";
-        this.ctx.lineWidth = 4;
-        this.ctx.font = '10px sans-serif';
+        this.ctx.lineWidth = 2;
+        this.ctx.font = 'bold 10px Arial';
 
         let currentStartAngle = this.startAngle;
 
-        this.prizes.forEach(prize=>{
+        this.prizes.forEach(prize => {
             const currentArc = this.arc * prize.weight;
             
+            // Draw segment
             this.ctx.fillStyle = prize.color;
-            
             this.ctx.beginPath();
-            this.ctx.arc(150, 150, outsideRadius, currentStartAngle, currentStartAngle + currentArc, false);
-            this.ctx.arc(150, 150, insideRadius, currentStartAngle + currentArc, currentStartAngle, true);
-            this.ctx.stroke();
+            this.ctx.moveTo(centerX, centerY);
+            this.ctx.arc(centerX, centerY, outsideRadius, currentStartAngle, currentStartAngle + currentArc, false);
+            this.ctx.closePath();
             this.ctx.fill();
+            this.ctx.stroke();
             
+            // Draw text
             this.ctx.save();
             this.ctx.fillStyle = "white";
             this.ctx.translate(
-                150 + Math.cos(currentStartAngle + currentArc / 2) * textRadius,
-                150 + Math.sin(currentStartAngle + currentArc / 2) * textRadius
+                centerX + Math.cos(currentStartAngle + currentArc / 2) * textRadius,
+                centerY + Math.sin(currentStartAngle + currentArc / 2) * textRadius
             );
             this.ctx.rotate(currentStartAngle + currentArc / 2 + Math.PI / 2);
+            
             const text = prize.text;
             this.ctx.fillText(text, -this.ctx.measureText(text).width / 2, 0);
             this.ctx.restore();
@@ -826,19 +866,31 @@ class WheelGame {
             currentStartAngle += currentArc;
         });
 
-        // Draw the pointer (triangle)
-        this.ctx.fillStyle = "black";
+        // Draw center circle
+        this.ctx.fillStyle = "#0047ab";
         this.ctx.beginPath();
-        this.ctx.moveTo(150 - 10, 150 - (outsideRadius + 15));
-        this.ctx.lineTo(150 + 10, 150 - (outsideRadius + 15));
-        this.ctx.lineTo(150, 150 - (outsideRadius - 5));
+        this.ctx.arc(centerX, centerY, insideRadius, 0, 2 * Math.PI);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // Draw the pointer
+        this.ctx.fillStyle = "#c40000";
+        this.ctx.beginPath();
+        this.ctx.moveTo(centerX - 10, 10);
+        this.ctx.lineTo(centerX + 10, 10);
+        this.ctx.lineTo(centerX, 40);
+        this.ctx.closePath();
         this.ctx.fill();
     }
 
     startSpin() {
-        if (this.isSpinning) return;
+          console.log('Spin button clicked');
+        if (this.isSpinning) {
+            console.log('Already spinning');
+            return;
+        }
         
-        // Check if the user has already spun (using localStorage)
+        // Check if the user has already spun
         if (localStorage.getItem('hasSpunTheWheel')) {
             showNotification('You have already played the Spin to Win game!', 'error');
             return;
@@ -848,9 +900,11 @@ class WheelGame {
         this.spinBtn.disabled = true;
         this.claimBtn.classList.add('hidden');
         this.resultDisplay.textContent = 'Good Luck!';
+        this.resultDisplay.style.color = '#333';
         
         this.spinTime = 0;
-        this.spinTimeTotal = Math.random() * 3000 + 4000; // 4 to 7 seconds spin
+        this.spinTimeTotal = Math.random() * 3000 + 4000; // 4 to 7 seconds
+        console.log('Starting spin...');
         this.rotateWheel();
     }
 
@@ -861,10 +915,15 @@ class WheelGame {
             return;
         }
         
-        const spinAngle = this.getSpinAngle();
+         const spinAngle = this.easeOut(this.spinTime, 0, 10, this.spinTimeTotal) * (Math.PI / 180);
         this.startAngle += spinAngle;
         this.drawWheel();
         requestAnimationFrame(() => this.rotateWheel());
+    }
+
+     easeOut(t, b, c, d) {
+        t /= d;
+        return -c * t * (t - 2) + b;
     }
 
     getSpinAngle() {
@@ -877,44 +936,45 @@ class WheelGame {
        this.isSpinning = false;
         this.spinBtn.disabled = false;
 
-        // Normalize the current angle relative to the center top (pointer location)
-        // Add PI/2 (90 degrees) to align the pointer (which is at the top) with the start of the first segment (which is usually on the right/0 degrees).
-        let currentAngle = (this.startAngle + Math.PI / 2) % (2 * Math.PI); 
-        if (currentAngle < 0) currentAngle += 2 * Math.PI;
+        // Calculate final angle and find winning prize
+        const normalizedAngle = (this.startAngle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+        const pointerAngle = (3 * Math.PI / 2); // Pointer is at top (270 degrees)
+        const finalAngle = (normalizedAngle + pointerAngle) % (2 * Math.PI);
 
         let cumulativeAngle = 0;
-        let winningPrize = null;
+        let winningPrize = this.prizes[0];
         
         // Find the winning prize segment under the pointer
         // The wheel draws segments counter-clockwise, so we iterate and check
         for (const prize of this.prizes) {
             const prizeArc = this.arc * prize.weight; // Angle of this prize segment (in radians)
             
-            if (currentAngle >= cumulativeAngle && currentAngle < cumulativeAngle + prizeArc) {
+            if (finalAngle >= cumulativeAngle && finalAngle < cumulativeAngle + prizeArc) {
                 winningPrize = prize;
                 break;
             }
             cumulativeAngle += prizeArc;
         }
 
-        this.finalPrize = winningPrize || { text: "Error", color: "black" };
+        this.finalPrize = winningPrize ;
         this.displayResult();
 
         // Mark that the user has spun
         localStorage.setItem('hasSpunTheWheel', 'true');
+        console.log('Spin completed, prize:', winningPrize.text);
     }
 
     displayResult() {
-        this.resultDisplay.style.color = this.finalPrize.color;
-        
-        if (this.finalPrize.text === 'Try Again') {
+     
+         if (this.finalPrize.text === 'Try Again') {
             this.resultDisplay.textContent = 'Aw, shucks! ' + this.finalPrize.text + '. Better luck next time!';
+            this.resultDisplay.style.color = this.finalPrize.color;
             this.claimBtn.classList.add('hidden');
         } else {
             this.resultDisplay.textContent = `🥳 Congratulations! You won: ${this.finalPrize.text}!`;
+            this.resultDisplay.style.color = this.finalPrize.color;
             this.claimBtn.classList.remove('hidden');
-            // Store the prize to apply after signup
-            sessionStorage.setItem('wheelPrize', this.finalPrize.text); 
+            sessionStorage.setItem('wheelPrize', this.finalPrize.text);
         }
     }
 
@@ -937,6 +997,7 @@ class WheelGame {
         this.startAngle = 0;
         this.drawWheel();
         this.resultDisplay.textContent = 'Spin to Win!';
+        this.resultDisplay.style.color = '#333';
         this.claimBtn.classList.add('hidden');
     }
 }
